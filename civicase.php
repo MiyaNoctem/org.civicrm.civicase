@@ -484,3 +484,33 @@ function _civicase_menu_walk(&$menu, $callback) {
     }
   }
 }
+
+/**
+ * Implements hook_civicrm_searchTasks
+ *
+ * @param string $objectType
+ * @param array $tasks
+ */
+function civicase_civicrm_searchTasks($objectType, &$tasks) {
+  $tasks[] = array(
+    'title' => 'Add to case as role',
+    'class' => 'CRM_Civicase_Form_AddToCaseAsRole',
+    'result' => FALSE
+  );
+}
+
+/**
+ * Implements hook_civicrm_summaryActions
+ *
+ * @param array $actions
+ * @param int $contactId
+ */
+function civicase_civicrm_summaryActions(&$actions, $contactId) {
+  $actions['add-to-case-as-role'] = array(
+    'title' => 'Add to case as role',
+    'href' => CRM_Utils_System::url('civicrm/caseroles/add-contact', 'reset=1'),
+    'weight' => 100,
+    'ref' => 'add-to-case-as-role',
+    'key' => 'add-to-case-as-role'
+  );
+}

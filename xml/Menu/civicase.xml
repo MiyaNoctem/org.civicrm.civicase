@@ -17,4 +17,11 @@
     <title>ContactActivityTab</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/case/add-contact</path>
+    <page_callback>CRM_Civicase_Form_AddContact</page_callback>
+    <title>AddContact</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <page_type>0</page_type>
+  </item>
 </menu>
