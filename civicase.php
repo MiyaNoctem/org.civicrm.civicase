@@ -380,8 +380,10 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 
 /**
  * Implements hook_civicrm_postProcess().
+ *
  * @param string $formName
  * @param CRM_Core_Form $form
+ *
  * @throws \CiviCRM_API3_Exception
  */
 function civicase_civicrm_postProcess($formName, &$form) {
@@ -401,14 +403,60 @@ function civicase_civicrm_postProcess($formName, &$form) {
 }
 
 /**
+ * Implements hook_civicrm_permission()
+ *
+ * @param array $permissions
+ *   Array of permissions defined on extensions
+ */
+function civicase_civicrm_permission(&$permissions) {
+  $civiCasePermissions = CRM_Civicase_Permissions::getCiviCasePermissions();
+  $permissions = array_merge($permissions, $civiCasePermissions);
+}
+
+/**
+ * Implements hook_civicrm_permission_check()
+ *
+ * @param $permission
+ * @param $granted
+ */
+function civicase_civicrm_permission_check($permission, &$granted) {
+  if (CRM_Civicase_Permissions::isOldCasePermission($permission)) {
+    $granted = CRM_Civicase_Permissions::permission_check($permission, $granted);
+  }
+}
+
+/**
  * Implements hook_civicrm_alterAPIPermissions().
  *
  * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_alterAPIPermissions/
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
-  $permissions['case']['get']['getfiles'] = array(
-    array('access my cases and activities', 'access all cases and activities'),
+
+  $permissions['case']['getfiles'] = array(
+    array(
+      CRM_Civicase_Permissions::CVCASE_VIEW_ALL,
+      CRM_Civicase_Permissions::CVCASE_VIEW_MINE,
+      CRM_Civicase_Permissions::CVCASE_EDIT_MINE,
+      CRM_Civicase_Permissions::CVCASE_EDIT_ALL
+    ),
     'access uploaded files',
+  );
+
+  $permissions['case']['get'] = array(
+    CRM_Civicase_Permissions::CVCASE_VIEW_ALL,
+    CRM_Civicase_Permissions::CVCASE_VIEW_MINE,
+    CRM_Civicase_Permissions::CVCASE_EDIT_MINE,
+    CRM_Civicase_Permissions::CVCASE_EDIT_ALL
+  );
+
+  $permissions['case']['delete'] = array(
+    CRM_Civicase_Permissions::CVCASE_DELETE_ALL,
+    CRM_Civicase_Permissions::CVCASE_DELETE_MINE
+  );
+
+  $permissions['case']['update'] = array(
+    CRM_Civicase_Permissions::CVCASE_EDIT_ALL,
+    CRM_Civicase_Permissions::CVCASE_EDIT_MINE,
   );
 }
 
